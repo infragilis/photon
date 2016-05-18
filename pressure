@@ -1,0 +1,28 @@
+int led = D0;
+// pressure sensor is connected to vin/gnd/A0
+
+void setup() {
+  // initialize serial communications at 9600 bps:
+  Serial.begin(9600);
+  
+  pinMode(led, OUTPUT);
+}
+
+void loop() {
+
+float sensorVoltage = analogRead(0);   // read the sensor voltage
+int psi = ((sensorVoltage-95)/204)*50-128;  //run the math to correct for voltage issues
+ if(psi < 0)
+  {
+    psi = 0;
+  }
+
+Serial.println (sensorVoltage);
+
+delay (10000);
+ Particle.publish("pool-pressure", String(psi));
+  digitalWrite(led, HIGH);
+  delay(1000);
+  digitalWrite(led, LOW);
+
+}
