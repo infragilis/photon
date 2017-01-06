@@ -1,0 +1,24 @@
+// External 10K Pulldown Resistor between D1/GND and jumper between D1/VIN
+const int triggerPin = D1;
+
+FuelGauge fuel;
+
+char publishString[128] = "";
+
+void setup()
+{
+  pinMode(triggerPin,INPUT);  // External 10K Pulldown Resistor attached
+  int startupTime = millis();
+  while(millis() - startupTime < 2000UL)  // allowing time to take digitalRead()
+  {
+      Particle.process();
+  }
+  sprintf(publishString, "Power %s, Fuel:%.1f%%", (digitalRead(triggerPin) == HIGH) ? "Restored" : "Outage", fuel.getSoC() );
+  Particle.publish("twilio", publishString);
+}
+
+void loop()
+{
+  System.sleep(triggerPin, CHANGE);
+  System.reset();
+}
